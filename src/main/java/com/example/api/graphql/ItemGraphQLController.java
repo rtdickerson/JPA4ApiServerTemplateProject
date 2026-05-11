@@ -4,6 +4,7 @@ import com.example.api.dto.CreateItemRequest;
 import com.example.api.dto.ItemResponse;
 import com.example.api.dto.UpdateItemRequest;
 import com.example.api.service.ItemService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -11,9 +12,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,26 +37,13 @@ public class ItemGraphQLController {
     }
 
     @MutationMapping
-    public ItemResponse createItem(@Argument Map<String, Object> input) {
-        var req = new CreateItemRequest(
-                (String) input.get("name"),
-                (String) input.get("description"),
-                new BigDecimal(input.get("price").toString()),
-                (Integer) input.get("quantity")
-        );
-        return itemService.create(req);
+    public ItemResponse createItem(@Valid @Argument CreateItemRequest input) {
+        return itemService.create(input);
     }
 
     @MutationMapping
-    public ItemResponse updateItem(@Argument Long id, @Argument Map<String, Object> input) {
-        var priceRaw = input.get("price");
-        var req = new UpdateItemRequest(
-                (String) input.get("name"),
-                (String) input.get("description"),
-                priceRaw != null ? new BigDecimal(priceRaw.toString()) : null,
-                (Integer) input.get("quantity")
-        );
-        return itemService.update(id, req).orElse(null);
+    public ItemResponse updateItem(@Argument Long id, @Valid @Argument UpdateItemRequest input) {
+        return itemService.update(id, input).orElse(null);
     }
 
     @MutationMapping

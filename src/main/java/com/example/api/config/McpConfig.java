@@ -1,6 +1,7 @@
 package com.example.api.config;
 
 import com.example.api.mcp.ItemMcpTools;
+import com.example.api.mcp.McpResources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.server.McpSyncServer;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.function.ServerResponse;
 public class McpConfig {
 
     private final ItemMcpTools itemMcpTools;
+    private final McpResources mcpResources;
 
     /**
      * SSE transport — exposes two HTTP endpoints:
@@ -36,8 +38,10 @@ public class McpConfig {
                         .tools(Boolean.FALSE)
                         // true = server will send prompts/listChanged notifications
                         .prompts(Boolean.TRUE)
+                        .resources(Boolean.FALSE, Boolean.FALSE)
                         .build())
                 .tools(itemMcpTools.all())
+                .resources(mcpResources.all())
                 .build();
     }
 
